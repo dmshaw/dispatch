@@ -1,0 +1,13 @@
+# $Id$
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: dispatch
+URL: http://www.jabberwocky.com/software/dispatch/
+Description: Library for interprocess messaging
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -ldispatch
+Cflags: -I${includedir}

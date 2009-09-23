@@ -1,0 +1,58 @@
+# $Id$
+
+Summary: Library for interprocess messaging
+Name: dispatch
+Version: @PACKAGE_VERSION@
+Release: 1
+License: LGPL
+Group: System Environment/Libraries
+Source: http://www.jabberwocky.com/software/dispatch/dispatch-%{version}.tar.gz
+Url: http://www.jabberwocky.com/software/dispatch/
+Prereq: /sbin/ldconfig
+BuildRoot: %{_tmppath}/%{name}-root
+
+%description
+The dispatch package contains a library to simplify interprocess
+messaging.
+
+%package devel
+Summary: dispatch static libraries and headers.
+Group: Development/Libraries
+Requires: dispatch = %{version}
+Prereq: /sbin/install-info
+
+%description devel
+This package contains the libraries and header files needed to develop
+programs that use the dispatch library.
+
+%prep
+%setup
+
+%build
+%configure
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR="$RPM_BUILD_ROOT"
+/sbin/ldconfig -n ${RPM_BUILD_ROOT}%{_libdir}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-,root,root)
+%doc README NEWS
+%{_libdir}/libdispatch.so.*
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/libdispatch.a
+%{_libdir}/libdispatch.so
+%{_libdir}/libdispatch.la
+%{_libdir}/pkgconfig/dispatch.pc
+%{_includedir}/dispatch.h
