@@ -31,6 +31,23 @@ cloexec_fd(int fd)
   return 0;
 }
 
+int
+nonblock_fd(int fd)
+{
+  long flags;
+
+  flags=fcntl(fd,F_GETFL);
+  if(flags==-1)
+    return -1;
+
+  flags|=O_NONBLOCK;
+
+  if(fcntl(fd,F_SETFL,flags)==-1)
+    return -1;
+
+  return 0;
+}
+
 struct msg_connection *
 get_connection(const char *host,const char *service,int flags)
 {
@@ -38,7 +55,7 @@ get_connection(const char *host,const char *service,int flags)
   struct msg_connection *conn=NULL;
 
   /* We don't need these yet, so lock them to their correct values. */
-  if(host || flags!=MSG_LOCAL)
+  if(host || !(flags&MSG_LOCAL))
     {
       errno=EINVAL;
       return NULL;
@@ -65,6 +82,9 @@ get_connection(const char *host,const char *service,int flags)
 	return NULL;
 
       if(cloexec_fd(conn->fd)==-1)
+	goto fail;
+
+      if(flags&MSG_NONBLOCK && nonblock_fd(conn->fd)==-1)
 	goto fail;
 
       memset(&addr_un,0,sizeof(addr_un));
