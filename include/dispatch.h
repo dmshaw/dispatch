@@ -45,9 +45,10 @@ struct msg_connection *msg_open(const char *host,const char *service,int flags);
 /* Don't return on a listen (i.e. become the listener thread) */
 #define MSG_NORETURN 2
 
+/* Don't block on a send */
+#define MSG_NONBLOCK 4
+
 /* TODO: add the getaddrinfo flags here, a la NUMERICHOST, etc. */
-
-
 
 /* Read and write to an open connection.  Treat these as you would
    read() and write(), except that msg_write is guaranteed to write

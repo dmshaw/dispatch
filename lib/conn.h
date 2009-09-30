@@ -14,6 +14,7 @@ struct msg_connection
 };
 
 int cloexec_fd(int fd);
+int nonblock_fd(int fd);
 struct msg_connection *get_connection(const char *host,const char *service,
 				      int flags);
 int close_connection(struct msg_connection *conn);
