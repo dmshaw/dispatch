@@ -57,12 +57,14 @@ worker_thread(void *d)
 }
 
 static void
-call_panic(struct msg_handler *handlers)
+call_panic(struct msg_handler *handlers,const char *where,const char *error)
 {
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
   if(!hand)
     {
-      fprintf(stderr,"Unable to handle MSG_TYPE_PANIC\n");
+      fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
+	      " Location was %s and error was %s\n",
+	      where?where:"<NULL>",error?error:"<NULL>");
       abort();
     }
 }
@@ -85,15 +87,15 @@ accept_thread(void *d)
 
       ddata=calloc(1,sizeof(*ddata));
       if(!ddata)
-	call_panic(adata->handlers);
+	call_panic(adata->handlers,"calloc",strerror(errno));
 
       ddata->conn.flags.internal=1;
       ddata->conn.fd=accept(adata->sock,NULL,NULL);
       if(ddata->conn.fd==-1)
-	call_panic(adata->handlers);
+	call_panic(adata->handlers,"accepting",strerror(errno));
 
       if(cloexec_fd(ddata->conn.fd)==-1)
-	call_panic(adata->handlers);
+	call_panic(adata->handlers,"cloexec",strerror(errno));
 
       err=msg_read(&ddata->conn,header,4);
       if(err==0)
@@ -105,7 +107,7 @@ accept_thread(void *d)
 	  continue;
 	}
       else if(err==-1)
-	call_panic(adata->handlers);
+	call_panic(adata->handlers,"msg_read",strerror(errno));
 
       ddata->type =header[2]<<8;
       ddata->type|=header[3];
@@ -121,7 +123,7 @@ accept_thread(void *d)
 
       err=pthread_create(&worker,&attr,worker_thread,ddata);
       if(err)
-	call_panic(adata->handlers);
+	call_panic(adata->handlers,"pthread_create",strerror(err));
     }
 
   return NULL;
