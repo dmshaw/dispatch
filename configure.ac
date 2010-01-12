@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([dispatch],[0.3],[dshaw@jabberwocky.com])
+AC_INIT([dispatch],[0.4],[dshaw@jabberwocky.com])
 AC_REVISION([$Id$])
 AC_CONFIG_SRCDIR([lib/msg.c])
 AC_CONFIG_HEADERS([config.h])
@@ -13,7 +13,6 @@ AM_INIT_AUTOMAKE([std-options])
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-# Checks for libraries.
 # Checks for libraries.
 AC_MSG_CHECKING([for pthreads])
 _save_libs=$LIBS
@@ -41,6 +40,7 @@ dnl # TCP_CORK is a real help, but we can work without it.
 dnl AC_CHECK_DECLS([TCP_CORK],,,[#include <netinet/tcp.h>])
 
 # Checks for library functions.
+AC_CHECK_FUNCS([syslog])
 
 AC_ARG_ENABLE(optimization,
    AS_HELP_STRING([--disable-optimization],[disable compiler optimization]),

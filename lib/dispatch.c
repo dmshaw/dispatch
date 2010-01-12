@@ -9,6 +9,7 @@ static const char RCSID[]="$Id$";
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <syslog.h>
 #include <dispatch.h>
 #include "conn.h"
 
@@ -62,9 +63,14 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
   if(!hand)
     {
+      syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle MSG_TYPE_PANIC."
+	     " Location was %s and error was %s",
+	     where?where:"<NULL>",error?error:"<NULL>");
+
       fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
 	      " Location was %s and error was %s\n",
 	      where?where:"<NULL>",error?error:"<NULL>");
+
       abort();
     }
 }
@@ -115,7 +121,11 @@ accept_thread(void *d)
       ddata->handler=lookup_handler(adata->handlers,ddata->type);
       if(!ddata->handler)
 	{
+	  syslog(LOG_DAEMON|LOG_EMERG,"Unable to handle type %"PRIu16,
+		 ddata->type);
+
 	  fprintf(stderr,"Unable to handle type %"PRIu16"\n",ddata->type);
+
 	  abort();
 	}
 
