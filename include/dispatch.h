@@ -81,6 +81,7 @@ int msg_listen(const char *host,const char *service,int flags,
 
 /* Some predefined types */
 #define MSG_TYPE_RESERVED 0
+#define MSG_TYPE_PING     65534
 #define MSG_TYPE_PANIC    65535  /* Must not return */
 
 /* Some handy readers and writers */

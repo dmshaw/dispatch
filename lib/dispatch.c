@@ -31,6 +31,12 @@ struct dispatch_data
 /* Again, I'm skipping all the connection caching stuff for now.  This
    does only the basic accept/pthread_create/handler/close cycle. */
 
+static int
+internal_ping(uint16_t type,struct msg_connection *conn)
+{
+  return msg_write_uint8(conn,0);
+}
+
 static msg_handler_t
 lookup_handler(struct msg_handler *handlers,unsigned short type)
 {
@@ -39,6 +45,9 @@ lookup_handler(struct msg_handler *handlers,unsigned short type)
   for(i=0;handlers[i].type;i++)
     if(handlers[i].type==type)
       return handlers[i].handler;
+
+  if(type==MSG_TYPE_PING)
+    return internal_ping;
 
   return NULL;
 }
