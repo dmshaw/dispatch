@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([dispatch],[0.5],[dshaw@jabberwocky.com])
+AC_INIT([dispatch],[0.5.5],[dshaw@jabberwocky.com])
 AC_REVISION([$Id$])
 AC_CONFIG_SRCDIR([lib/msg.c])
 AC_CONFIG_HEADERS([config.h])
