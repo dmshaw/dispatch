@@ -173,12 +173,14 @@ msg_listen(const char *host,const char *service,int flags,
   for(i=0;handlers[i].type;i++)
     ;
 
-  data->handlers=calloc(1,i*sizeof(struct msg_handler));
+  data->handlers=calloc(1,(i+1)*sizeof(struct msg_handler));
   if(!data->handlers)
     goto fail;
 
   for(i=0;handlers[i].type;i++)
     data->handlers[i]=handlers[i];
+
+  data->handlers[i].type=0;
 
   if(flags&MSG_LOCAL)
     {
