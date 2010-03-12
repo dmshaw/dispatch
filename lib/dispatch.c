@@ -105,9 +105,19 @@ accept_thread(void *d)
 	call_panic(adata->handlers,"calloc",strerror(errno));
 
       ddata->conn.flags.internal=1;
-      ddata->conn.fd=accept(adata->sock,NULL,NULL);
-      if(ddata->conn.fd==-1)
-	call_panic(adata->handlers,"accepting",strerror(errno));
+
+      do
+	{
+	  ddata->conn.fd=accept(adata->sock,NULL,NULL);
+	  if(ddata->conn.fd==-1)
+	    {
+	      if(errno==EINTR)
+		continue;
+	      else
+		call_panic(adata->handlers,"accepting",strerror(errno));
+	    }
+	}
+      while(ddata->conn.fd==-1);
 
       if(cloexec_fd(ddata->conn.fd)==-1)
 	call_panic(adata->handlers,"cloexec",strerror(errno));
