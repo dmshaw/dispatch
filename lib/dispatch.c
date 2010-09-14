@@ -66,19 +66,52 @@ worker_thread(void *d)
   return NULL;
 }
 
+#ifdef __linux__
+static void
+dump_status(FILE *output)
+{
+  pid_t pid=getpid();
+  char path[1024];
+
+  if(snprintf(path,1024,"/proc/%u/status",pid)>1024)
+    fprintf(output,"Can't make path");
+  else
+    {
+      FILE *file;
+
+      file=fopen(path,"r");
+      if(!file)
+	fprintf(output,"Can't open %s: %s",path,strerror(errno));
+      else
+	{
+	  char line[1024];
+
+	  while(fgets(line,1024,file))
+	    fprintf(output,"%s",line);
+
+	  fclose(file);
+	}
+    }
+}
+#endif
+
 static void
 call_panic(struct msg_handler *handlers,const char *where,const char *error)
 {
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
   if(!hand)
     {
-      syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle MSG_TYPE_PANIC."
-	     " Location was %s and error was %s",
+      syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle"
+	     " MSG_TYPE_PANIC. Location was %s and error was %s",
 	     where?where:"<NULL>",error?error:"<NULL>");
 
       fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
 	      " Location was %s and error was %s\n",
 	      where?where:"<NULL>",error?error:"<NULL>");
+
+#ifdef __linux__
+      dump_status(stderr);
+#endif
 
       abort();
     }
