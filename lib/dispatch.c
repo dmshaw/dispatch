@@ -138,7 +138,11 @@ accept_thread(void *d)
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
   if(_config->stacksize)
-    pthread_attr_setstacksize(&attr,_config->stacksize);
+    {
+      int err=pthread_attr_setstacksize(&attr,_config->stacksize);
+      if(err)
+	call_panic(adata->handlers,"setstacksize",strerror(err));
+    }
 
   for(;;)
     {
