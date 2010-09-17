@@ -18,7 +18,7 @@ msg_init(struct msg_config *config)
       return -1;
     }
 
-  memcpy(_config,config,sizeof(_config));
+  memcpy(_config,config,sizeof(*_config));
 
   if(_config->max_concurrency==0)
     _config->max_concurrency=-1;
