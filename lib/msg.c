@@ -6,9 +6,23 @@ static const char RCSID[]="$Id$";
 #include <dispatch.h>
 #include "conn.h"
 
+struct msg_config *_config;
+
 int
 msg_init(struct msg_config *config)
 {
+  _config=malloc(sizeof(*_config));
+  if(!_config)
+    {
+      errno=ENOMEM;
+      return -1;
+    }
+
+  memcpy(_config,config,sizeof(_config));
+
+  if(_config->max_concurrency==0)
+    _config->max_concurrency=-1;
+
   return 0;
 }
 

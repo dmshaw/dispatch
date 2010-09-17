@@ -13,6 +13,11 @@ static const char RCSID[]="$Id$";
 #include <dispatch.h>
 #include "conn.h"
 
+extern struct msg_config *_config;
+static pthread_mutex_t concurrency_lock=PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t concurrency_cond=PTHREAD_COND_INITIALIZER;
+static size_t concurrency;
+
 typedef int (*msg_handler_t)(unsigned short,struct msg_connection *conn);
 
 struct accept_data
@@ -63,6 +68,11 @@ worker_thread(void *d)
 
   free(ddata);
 
+  pthread_mutex_lock(&concurrency_lock);
+  concurrency--;
+  pthread_cond_signal(&concurrency_cond);
+  pthread_mutex_unlock(&concurrency_lock);
+
   return NULL;
 }
 
@@ -74,14 +84,14 @@ dump_status(FILE *output)
   char path[1024];
 
   if(snprintf(path,1024,"/proc/%u/status",pid)>1024)
-    fprintf(output,"Can't make path");
+    fprintf(output,"Can't make path\n");
   else
     {
       FILE *file;
 
       file=fopen(path,"r");
       if(!file)
-	fprintf(output,"Can't open %s: %s",path,strerror(errno));
+	fprintf(output,"Can't open %s: %s\n",path,strerror(errno));
       else
 	{
 	  char line[1024];
@@ -102,12 +112,14 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
   if(!hand)
     {
       syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle"
-	     " MSG_TYPE_PANIC. Location was %s and error was %s",
-	     where?where:"<NULL>",error?error:"<NULL>");
+	     " MSG_TYPE_PANIC. Location was %s, concurrency %u of %u, and"
+	     " error %s",where?where:"<NULL>",concurrency,
+	     _config->max_concurrency,error?error:"<NULL>");
 
       fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
-	      " Location was %s and error was %s\n",
-	      where?where:"<NULL>",error?error:"<NULL>");
+	      " Location was %s, concurrency %u of %u, and error %s\n",
+	      where?where:"<NULL>",concurrency,_config->max_concurrency,
+	      error?error:"<NULL>");
 
 #ifdef __linux__
       dump_status(stderr);
@@ -125,6 +137,8 @@ accept_thread(void *d)
 
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+  if(_config->stacksize)
+    pthread_attr_setstacksize(&attr,_config->stacksize);
 
   for(;;)
     {
@@ -154,6 +168,15 @@ accept_thread(void *d)
 
       if(cloexec_fd(ddata->conn.fd)==-1)
 	call_panic(adata->handlers,"cloexec",strerror(errno));
+
+      pthread_mutex_lock(&concurrency_lock);
+
+      while(concurrency>=_config->max_concurrency)
+	pthread_cond_wait(&concurrency_cond,&concurrency_lock);
+
+      concurrency++;
+
+      pthread_mutex_unlock(&concurrency_lock);
 
       err=msg_read(&ddata->conn,header,4);
       if(err==0)
@@ -204,6 +227,16 @@ msg_listen(const char *host,const char *service,int flags,
     {
       errno=EINVAL;
       return -1;
+    }
+
+  if(!_config)
+    {
+      static struct msg_config my_config;
+
+      memset(&my_config,0,sizeof(my_config));
+      my_config.max_concurrency=-1;
+
+      _config=&my_config;
     }
 
   data=calloc(1,sizeof(*data));
