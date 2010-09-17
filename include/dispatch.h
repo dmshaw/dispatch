@@ -23,7 +23,8 @@ struct msg_handler
 
 struct msg_config
 {
-  /* None for now */
+  size_t max_concurrency;
+  size_t stacksize;
 };
 
 /* Call this before any other message functions.  If you don't call
