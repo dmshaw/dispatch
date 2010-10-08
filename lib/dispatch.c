@@ -111,14 +111,13 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
   if(!hand)
     {
-      syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle"
-	     " MSG_TYPE_PANIC. Location %s, concurrency %u of %u, and"
-	     " error: %s",where?where:"<NULL>",(unsigned int)concurrency,
-	     (unsigned int)_config->max_concurrency,error?error:"<NULL>");
+      syslog(LOG_DAEMON|LOG_EMERG,"Dispatch panic!  Location: %s  Concurrency:"
+	     " %u of %u  Error: %s",where?where:"<NULL>",
+	     (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
+	     error?error:"<NULL>");
 
-      fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
-	      " Location %s, concurrency %u of %u, and error: %s\n",
-	      where?where:"<NULL>",(unsigned int)concurrency,
+      fprintf(stderr,"Dispatch panic!  Location: %s  Concurrency: %u of %u"
+	      "  Error: %s\n",where?where:"<NULL>",(unsigned int)concurrency,
 	      (unsigned int)_config->max_concurrency,error?error:"<NULL>");
 
 #ifdef __linux__
