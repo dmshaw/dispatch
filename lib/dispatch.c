@@ -112,14 +112,14 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
   if(!hand)
     {
       syslog(LOG_DAEMON|LOG_EMERG,"dispatch was unable to handle"
-	     " MSG_TYPE_PANIC. Location was %s, concurrency %u of %u, and"
-	     " error %s",where?where:"<NULL>",concurrency,
-	     _config->max_concurrency,error?error:"<NULL>");
+	     " MSG_TYPE_PANIC. Location %s, concurrency %u of %u, and"
+	     " error: %s",where?where:"<NULL>",(unsigned int)concurrency,
+	     (unsigned int)_config->max_concurrency,error?error:"<NULL>");
 
       fprintf(stderr,"Unable to handle MSG_TYPE_PANIC."
-	      " Location was %s, concurrency %u of %u, and error %s\n",
-	      where?where:"<NULL>",concurrency,_config->max_concurrency,
-	      error?error:"<NULL>");
+	      " Location %s, concurrency %u of %u, and error: %s\n",
+	      where?where:"<NULL>",(unsigned int)concurrency,
+	      (unsigned int)_config->max_concurrency,error?error:"<NULL>");
 
 #ifdef __linux__
       dump_status(stderr);
@@ -141,7 +141,7 @@ accept_thread(void *d)
     {
       int err=pthread_attr_setstacksize(&attr,_config->stacksize);
       if(err)
-	call_panic(adata->handlers,"setstacksize",strerror(err));
+	call_panic(adata->handlers,"pthread_attr_setstacksize",strerror(err));
     }
 
   for(;;)
@@ -165,7 +165,7 @@ accept_thread(void *d)
 	      if(errno==EINTR)
 		continue;
 	      else
-		call_panic(adata->handlers,"accepting",strerror(errno));
+		call_panic(adata->handlers,"accept",strerror(errno));
 	    }
 	}
       while(ddata->conn.fd==-1);
