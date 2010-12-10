@@ -16,6 +16,10 @@ read_length(struct msg_connection *conn,uint32_t *length,uint8_t *special)
 {
   unsigned char a;
   ssize_t err;
+  uint8_t my_special;
+
+  if(!special)
+    special=&my_special;
 
   *length=*special=0;
 
@@ -143,7 +147,7 @@ msg_read_string(struct msg_connection *conn,char **string)
 }
 
 int
-msg_write_string(struct msg_connection *conn, const char *string)
+msg_write_string(struct msg_connection *conn,const char *string)
 {
   int err;
 
@@ -162,6 +166,45 @@ msg_write_string(struct msg_connection *conn, const char *string)
     }
   else
     return write_length(conn,0,1);
+}
+
+int
+msg_read_buffer_length(struct msg_connection *conn,size_t *length)
+{
+  int err;
+  uint32_t remote_length;
+
+  err=read_length(conn,&remote_length,NULL);
+  if(err!=1)
+    return err;
+
+  *length=remote_length;
+
+  return err;
+}
+
+int
+msg_read_buffer(struct msg_connection *conn,void *buffer,size_t length)
+{
+  if(length>0)
+    return msg_read(conn,buffer,length);
+  else
+    return 1;
+}
+
+int
+msg_write_buffer_length(struct msg_connection *conn,size_t length)
+{
+  return write_length(conn,length,0);
+}
+
+int
+msg_write_buffer(struct msg_connection *conn,const void *buffer,size_t length)
+{
+  if(length>0)
+    return msg_write(conn,buffer,length);
+  else
+    return 1;
 }
 
 int

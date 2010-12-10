@@ -94,6 +94,13 @@ int msg_listen(const char *host,const char *service,int flags,
 int msg_read_string(struct msg_connection *conn,char **string);
 int msg_write_string(struct msg_connection *conn,const char *string);
 
+int msg_read_buffer_length(struct msg_connection *conn,size_t *length);
+int msg_read_buffer(struct msg_connection *conn,void *buffer,size_t length);
+
+int msg_write_buffer_length(struct msg_connection *conn,size_t length);
+int msg_write_buffer(struct msg_connection *conn,
+		     const void *buffer,size_t length);
+
 int msg_read_uint8(struct msg_connection *conn,uint8_t *val);
 int msg_write_uint8(struct msg_connection *conn,uint8_t val);
 
