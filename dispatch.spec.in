@@ -8,7 +8,7 @@ License: LGPL
 Group: System Environment/Libraries
 Source: http://www.jabberwocky.com/software/dispatch/dispatch-%{version}.tar.gz
 Url: http://www.jabberwocky.com/software/dispatch/
-Prereq: /sbin/ldconfig
+Requires: /sbin/ldconfig
 BuildRoot: %{_tmppath}/%{name}-root
 
 %description
@@ -19,7 +19,7 @@ messaging.
 Summary: dispatch static libraries and headers.
 Group: Development/Libraries
 Requires: dispatch = %{version}
-Prereq: /sbin/install-info
+Requires: /sbin/install-info
 
 %description devel
 This package contains the libraries and header files needed to develop
