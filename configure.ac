@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.63])
+AC_PREREQ(2.63)
 AC_INIT([dispatch],[0.5.12],[dshaw@jabberwocky.com])
 AC_REVISION([$Id$])
 AC_CONFIG_SRCDIR([lib/msg.c])
@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([std-options])
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Checks for libraries.
 AC_MSG_CHECKING([for pthreads])
