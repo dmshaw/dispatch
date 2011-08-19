@@ -408,7 +408,7 @@ msg_read_fd(struct msg_connection *conn,int *fd)
   msg.msg_control=buf;
   msg.msg_controllen=sizeof(buf);
 
-  err=recvmsg(conn->fd,&msg,0);
+  err=recvmsg(conn->fd,&msg,MSG_CMSG_CLOEXEC);
   if(err==1)
     {
       if(msg.msg_controllen<sizeof(*cmsg))
