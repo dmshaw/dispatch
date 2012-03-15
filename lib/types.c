@@ -397,7 +397,7 @@ msg_read_fd(struct msg_connection *conn,int *fd)
 {
   struct msghdr msg={0};
   struct cmsghdr *cmsg;
-  char buf[CMSG_SPACE(sizeof(fd))],i;
+  char buf[CMSG_SPACE(sizeof(*fd))],i;
   int err;
   struct iovec iov;
 
@@ -421,7 +421,7 @@ msg_read_fd(struct msg_connection *conn,int *fd)
 	     || cmsg->cmsg_type!=SCM_RIGHTS)
 	    continue;
 
-	  memcpy(fd,CMSG_DATA(cmsg),sizeof(fd));
+	  memcpy(fd,CMSG_DATA(cmsg),sizeof(*fd));
 	  break;
 	}
 

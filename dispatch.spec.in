@@ -1,5 +1,3 @@
-# $Id$
-
 Summary: Library for interprocess messaging
 Name: dispatch
 Version: @PACKAGE_VERSION@
