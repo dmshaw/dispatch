@@ -1,5 +1,3 @@
-static const char RCSID[]="$Id$";
-
 #include <config.h>
 #include <inttypes.h>
 #include <stdlib.h>
@@ -437,7 +435,7 @@ msg_write_fd(struct msg_connection *conn,int fd)
 {
   struct msghdr msg={0};
   struct cmsghdr *cmsg;
-  char buf[CMSG_SPACE(sizeof(fd))];
+  char buf[CMSG_SPACE(sizeof(fd))]={0};
   struct iovec iov;
 
   iov.iov_base="i";
