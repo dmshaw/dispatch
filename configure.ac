@@ -51,5 +51,5 @@ if test "$GCC" = yes; then
    CFLAGS="-Wall -Werror -pedantic $CFLAGS"
 fi
 
-AC_CONFIG_FILES([Makefile lib/Makefile dispatch.pc dispatch.spec])
+AC_CONFIG_FILES([Makefile lib/Makefile example/Makefile dispatch.pc dispatch.spec])
 AC_OUTPUT
