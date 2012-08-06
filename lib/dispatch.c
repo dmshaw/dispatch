@@ -1,5 +1,3 @@
-static const char RCSID[]="$Id$";
-
 #include <config.h>
 #include <pthread.h>
 #include <errno.h>
@@ -109,23 +107,26 @@ static void
 call_panic(struct msg_handler *handlers,const char *where,const char *error)
 {
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
-  if(!hand)
+
+  syslog(LOG_DAEMON|LOG_EMERG,"Dispatch PANIC!  Location: %s  Concurrency:"
+	 " %u of %u  Error: %s",where?where:"<NULL>",
+	 (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
+	 error?error:"<NULL>");
+
+  fprintf(stderr,"Dispatch PANIC!  Location: %s  Concurrency: %u of %u"
+	  "  Error: %s\n",where?where:"<NULL>",(unsigned int)concurrency,
+	  (unsigned int)_config->max_concurrency,error?error:"<NULL>");
+
+  if(hand)
+    (hand)(MSG_TYPE_PANIC,NULL);
+  else
     {
-      syslog(LOG_DAEMON|LOG_EMERG,"Dispatch PANIC!  Location: %s  Concurrency:"
-	     " %u of %u  Error: %s",where?where:"<NULL>",
-	     (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
-	     error?error:"<NULL>");
-
-      fprintf(stderr,"Dispatch PANIC!  Location: %s  Concurrency: %u of %u"
-	      "  Error: %s\n",where?where:"<NULL>",(unsigned int)concurrency,
-	      (unsigned int)_config->max_concurrency,error?error:"<NULL>");
-
 #ifdef __linux__
       dump_status(stderr);
 #endif
-
-      abort();
     }
+
+  abort();
 }
 
 static void *
