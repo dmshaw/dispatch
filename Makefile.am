@@ -1,7 +1,5 @@
-# $Id$
-
 ACLOCAL_AMFLAGS=-I m4
-SUBDIRS=lib
+SUBDIRS=lib example
 include_HEADERS=include/dispatch.h
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=dispatch.pc
