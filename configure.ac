@@ -48,7 +48,7 @@ AC_ARG_ENABLE(optimization,
    fi])
 
 if test "$GCC" = yes; then
-   CFLAGS="-Wall -pedantic $CFLAGS"
+   CFLAGS="-Wall -Werror -pedantic $CFLAGS"
 fi
 
 AC_CONFIG_FILES([Makefile lib/Makefile dispatch.pc dispatch.spec])
