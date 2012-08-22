@@ -51,7 +51,7 @@ nonblock_fd(int fd)
 struct msg_connection *
 get_connection(const char *host,const char *service,int flags)
 {
-  int err,save_errno;
+  int err=-1,save_errno;
   struct msg_connection *conn=NULL;
 
   /* We don't need these yet, so lock them to their correct values. */
