@@ -1,5 +1,3 @@
-# $Id$
-
 #INCLUDES=-I${top_srcdir}/include
 #bin_PROGRAMS=tester sender
 #tester_LDADD=libdispatch.la

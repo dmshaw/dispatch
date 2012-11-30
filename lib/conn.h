@@ -1,5 +1,3 @@
-/* $Id: conn.h$ */
-
 #ifndef _CONN_H_
 #define _CONN_H_
 
