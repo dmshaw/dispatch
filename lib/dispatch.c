@@ -237,9 +237,7 @@ msg_listen(const char *host,const char *service,int flags,
     {
       static struct msg_config my_config;
 
-      memset(&my_config,0,sizeof(my_config));
-      my_config.max_concurrency=-1;
-
+      msg_config_init(&my_config);
       _config=&my_config;
     }
 
