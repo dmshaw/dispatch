@@ -23,6 +23,10 @@ struct msg_config
 {
   size_t max_concurrency;
   size_t stacksize;
+  struct
+  {
+    unsigned int failed_accept:1;
+  } panic_on;
 };
 
 /* Fill in a msg_config structure with the default values. */

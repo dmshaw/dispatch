@@ -160,12 +160,13 @@ accept_thread(void *d)
       do
 	{
 	  ddata->conn.fd=accept(adata->sock,NULL,NULL);
-	  if(ddata->conn.fd==-1)
+	  if(ddata->conn.fd==-1 && errno!=EINTR)
 	    {
-	      if(errno==EINTR)
-		continue;
-	      else
+	      if(_config->panic_on.failed_accept)
 		call_panic(adata->handlers,"accept",strerror(errno));
+	      else
+		syslog(LOG_DAEMON,"Dispatch could not accept: %s",
+		       strerror(errno));
 	    }
 	}
       while(ddata->conn.fd==-1);
