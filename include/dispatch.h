@@ -40,7 +40,7 @@ void msg_config_init(struct msg_config *config);
 /* Call this before any other message functions.  If you don't call
    it, the default configuration will be used. */
 
-int msg_init(struct msg_config *config);
+int msg_init(const struct msg_config *config);
 
 /* Open a connection to the entity specified via host & service (in
    the getaddrinfo sense). */

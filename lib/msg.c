@@ -18,7 +18,7 @@ msg_config_init(struct msg_config *config)
 }
 
 int
-msg_init(struct msg_config *config)
+msg_init(const struct msg_config *config)
 {
   _config=malloc(sizeof(*_config));
   if(!_config)
@@ -28,6 +28,8 @@ msg_init(struct msg_config *config)
     }
 
   memcpy(_config,config,sizeof(*_config));
+
+  /* Sanity check the config */
 
   if(_config->max_concurrency==0)
     _config->max_concurrency=-1;
