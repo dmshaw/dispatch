@@ -25,6 +25,10 @@ struct msg_config
   size_t stacksize;
 };
 
+/* Fill in a msg_config structure with the default values. */
+
+void msg_config_init(struct msg_config *config);
+
 /* Call this before any other message functions.  If you don't call
    it, the default configuration will be used. */
 

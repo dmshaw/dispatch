@@ -8,6 +8,14 @@
 
 struct msg_config *_config;
 
+void
+msg_config_init(struct msg_config *config)
+{
+  memset(config,0,sizeof(*config));
+
+  config->max_concurrency=-1;
+}
+
 int
 msg_init(struct msg_config *config)
 {
