@@ -32,6 +32,9 @@ msg_init(struct msg_config *config)
   if(_config->max_concurrency==0)
     _config->max_concurrency=-1;
 
+  if(_config->log_on.failed_accept==0)
+    _config->log_on.failed_accept=1;
+
   return 0;
 }
 

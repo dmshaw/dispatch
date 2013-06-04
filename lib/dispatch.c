@@ -134,6 +134,7 @@ accept_thread(void *d)
 {
   struct accept_data *adata=d;
   pthread_attr_t attr;
+  unsigned int failed_accept_count=0;
 
   pthread_attr_init(&attr);
   pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
@@ -164,7 +165,7 @@ accept_thread(void *d)
 	    {
 	      if(_config->panic_on.failed_accept)
 		call_panic(adata->handlers,"accept",strerror(errno));
-	      else
+	      else if((failed_accept_count++)%_config->log_on.failed_accept==0)
 		syslog(LOG_DAEMON,"Dispatch could not accept: %s",
 		       strerror(errno));
 	    }
