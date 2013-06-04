@@ -165,7 +165,8 @@ accept_thread(void *d)
 	    {
 	      if(_config->panic_on.failed_accept)
 		call_panic(adata->handlers,"accept",strerror(errno));
-	      else if((failed_accept_count++)%_config->log_on.failed_accept==0)
+	      else if(_config->log_on.failed_accept
+		      && (failed_accept_count++)%_config->log_on.failed_accept==0)
 		syslog(LOG_DAEMON,"Dispatch could not accept: %s",
 		       strerror(errno));
 	    }
