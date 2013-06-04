@@ -14,6 +14,7 @@ msg_config_init(struct msg_config *config)
   memset(config,0,sizeof(*config));
 
   config->max_concurrency=-1;
+  config->panic_on.failed_accept=1;
 }
 
 int
