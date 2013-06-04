@@ -27,6 +27,10 @@ struct msg_config
   {
     unsigned int failed_accept:1;
   } panic_on;
+  struct
+  {
+    unsigned int failed_accept;
+  } log_on;
 };
 
 /* Fill in a msg_config structure with the default values. */
