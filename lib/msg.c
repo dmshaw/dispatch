@@ -15,6 +15,7 @@ msg_config_init(struct msg_config *config)
 
   config->max_concurrency=-1;
   config->panic_on.failed_accept=1;
+  config->log_on.failed_accept=1;
 }
 
 int
@@ -33,9 +34,6 @@ msg_init(const struct msg_config *config)
 
   if(_config->max_concurrency==0)
     _config->max_concurrency=-1;
-
-  if(_config->log_on.failed_accept==0)
-    _config->log_on.failed_accept=1;
 
   return 0;
 }
