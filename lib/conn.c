@@ -7,10 +7,51 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include <dispatch.h>
 #include "conn.h"
 
 /* No caching yet.  This is all opens and closes. */
+
+socklen_t
+populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
+{
+  socklen_t socklen;
+
+  /* Note that sun_path isn't null terminated.  The socklen field is
+     used to know when it ends. */
+
+  memset(addr_un,0,sizeof(addr_un));
+
+  addr_un->sun_family=AF_LOCAL;
+
+  if(flags&MSG_ABSTRACT)
+    {
+      if(1+strlen(service)>sizeof(addr_un->sun_path))
+	{
+	  errno=ERANGE;
+	  return -1;
+	}
+
+      strcpy(&addr_un->sun_path[1],service);
+
+      socklen=offsetof(struct sockaddr_un,sun_path)+1+strlen(service);
+    }
+  else
+    {
+      if(1+strlen(service)>sizeof(addr_un->sun_path))
+	{
+	  errno=ERANGE;
+	  return -1;
+	}
+
+      strcpy(addr_un->sun_path,service);
+
+      socklen=offsetof(struct sockaddr_un,sun_path)+strlen(service);
+    }
+
+  return socklen;
+}
 
 int
 cloexec_fd(int fd)
@@ -68,12 +109,7 @@ get_connection(const char *host,const char *service,int flags)
   if(flags&MSG_LOCAL)
     {
       struct sockaddr_un addr_un;
-
-      if(strlen(service)+1>sizeof(addr_un.sun_path))
-	{
-	  errno=ERANGE;
-	  return NULL;
-	}
+      socklen_t socklen;
 
       conn->fd=socket(AF_LOCAL,SOCK_STREAM,0);
       if(conn->fd==-1)
@@ -85,12 +121,11 @@ get_connection(const char *host,const char *service,int flags)
       if(flags&MSG_NONBLOCK && nonblock_fd(conn->fd)==-1)
 	goto fail;
 
-      memset(&addr_un,0,sizeof(addr_un));
+      socklen=populate_sockaddr_un(service,flags,&addr_un);
+      if(socklen==-1)
+	goto fail;
 
-      addr_un.sun_family=AF_LOCAL;
-      strcpy(addr_un.sun_path,service);
-
-      err=connect(conn->fd,(struct sockaddr *)&addr_un,sizeof(addr_un));
+      err=connect(conn->fd,(struct sockaddr *)&addr_un,socklen);
     }
 
   if(err==-1)
