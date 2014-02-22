@@ -230,7 +230,7 @@ msg_listen(const char *host,const char *service,int flags,
   pthread_t thread;
 
   /* We don't need these yet, so lock them to their correct values. */
-  if(host || !(flags&MSG_LOCAL))
+  if(host || !(flags&MSG_LOCAL || flags&MSG_ABSTRACT))
     {
       errno=EINVAL;
       return -1;
@@ -263,7 +263,7 @@ msg_listen(const char *host,const char *service,int flags,
 
   data->handlers[i].type=0;
 
-  if(flags&MSG_LOCAL)
+  if(flags&MSG_LOCAL || flags&MSG_ABSTRACT)
     {
       struct sockaddr_un addr_un;
       socklen_t socklen;
