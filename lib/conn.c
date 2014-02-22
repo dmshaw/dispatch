@@ -94,7 +94,7 @@ get_connection(const char *host,const char *service,int flags)
   struct msg_connection *conn=NULL;
 
   /* We don't need these yet, so lock them to their correct values. */
-  if(host || !(flags&MSG_LOCAL))
+  if(host || !(flags&MSG_LOCAL || flags&MSG_ABSTRACT))
     {
       errno=EINVAL;
       return NULL;
@@ -106,7 +106,7 @@ get_connection(const char *host,const char *service,int flags)
 
   conn->fd=-1;
 
-  if(flags&MSG_LOCAL)
+  if(flags&MSG_LOCAL || flags&MSG_ABSTRACT)
     {
       struct sockaddr_un addr_un;
       socklen_t socklen;

@@ -61,7 +61,7 @@ struct msg_connection *msg_open(const char *host,const char *service,int flags);
 
 /* Make the local socket in the abstract namespace (only on Linux).
    Implies MSG_LOCAL. */
-#define MSG_ABSTRACT (MSG_LOCAL|8)
+#define MSG_ABSTRACT 8
 
 /* TODO: add the getaddrinfo flags here, a la NUMERICHOST, etc. */
 
