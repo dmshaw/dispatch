@@ -266,12 +266,7 @@ msg_listen(const char *host,const char *service,int flags,
   if(flags&MSG_LOCAL)
     {
       struct sockaddr_un addr_un;
-
-      if(strlen(service)+1>sizeof(addr_un.sun_path))
-	{
-	  errno=ERANGE;
-	  goto fail;
-	}
+      socklen_t socklen;
 
       data->sock=socket(AF_LOCAL,SOCK_STREAM,0);
       if(data->sock==-1)
@@ -280,14 +275,14 @@ msg_listen(const char *host,const char *service,int flags,
       if(cloexec_fd(data->sock)==-1)
 	goto fail;
 
-      memset(&addr_un,0,sizeof(addr_un));
+      socklen=populate_sockaddr_un(service,flags,&addr_un);
+      if(socklen==-1)
+	goto fail;
 
-      addr_un.sun_family=AF_LOCAL;
-      strcpy(addr_un.sun_path,service);
+      if(!(flags&MSG_ABSTRACT))
+	unlink(service);
 
-      unlink(service);
-
-      err=bind(data->sock,(struct sockaddr *)&addr_un,sizeof(addr_un));
+      err=bind(data->sock,(struct sockaddr *)&addr_un,socklen);
       if(err==-1)
 	goto fail;
     }
