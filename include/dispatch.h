@@ -59,9 +59,9 @@ struct msg_connection *msg_open(const char *host,const char *service,int flags);
 /* Don't block on a send */
 #define MSG_NONBLOCK 4
 
-/* Use make the local socket in the abstract namespace (use with
-   MSG_LOCAL, and only on Linux) */
-#define MSG_ABSTRACT 8
+/* Make the local socket in the abstract namespace (only on Linux).
+   Implies MSG_LOCAL. */
+#define MSG_ABSTRACT (MSG_LOCAL|8)
 
 /* TODO: add the getaddrinfo flags here, a la NUMERICHOST, etc. */
 
