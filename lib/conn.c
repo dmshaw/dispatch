@@ -19,15 +19,16 @@ populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
   socklen_t socklen;
   size_t servicelen=strlen(service);
 
-  /* Note that sun_path isn't null terminated.  The socklen field is
-     used to know when it ends. */
-
   memset(addr_un,0,sizeof(addr_un));
 
   addr_un->sun_family=AF_LOCAL;
 
   if(flags&MSG_ABSTRACT)
     {
+      /* Note that sun_path isn't null terminated in the abstract
+	 namespace.  The socklen field is used to know when it
+	 ends. */
+
       if(1+servicelen>sizeof(addr_un->sun_path))
 	{
 	  errno=ERANGE;
@@ -40,15 +41,19 @@ populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
     }
   else
     {
-      if(servicelen>sizeof(addr_un->sun_path))
+      /* There is actually some minor debate whether sun_path needs to
+	 be null terminated for regular local sockets, so this code
+	 terminates it just to be safe. */
+
+      if(servicelen+1>sizeof(addr_un->sun_path))
 	{
 	  errno=ERANGE;
 	  return -1;
 	}
 
-      memcpy(addr_un->sun_path,service,servicelen);
+      strcpy(addr_un->sun_path,service);
 
-      socklen=offsetof(struct sockaddr_un,sun_path)+servicelen;
+      socklen=offsetof(struct sockaddr_un,sun_path)+servicelen+1;
     }
 
   return socklen;
