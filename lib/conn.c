@@ -17,6 +17,7 @@ socklen_t
 populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
 {
   socklen_t socklen;
+  size_t servicelen=strlen(service);
 
   /* Note that sun_path isn't null terminated.  The socklen field is
      used to know when it ends. */
@@ -27,27 +28,27 @@ populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
 
   if(flags&MSG_ABSTRACT)
     {
-      if(1+strlen(service)>sizeof(addr_un->sun_path))
+      if(1+servicelen>sizeof(addr_un->sun_path))
 	{
 	  errno=ERANGE;
 	  return -1;
 	}
 
-      strcpy(&addr_un->sun_path[1],service);
+      memcpy(&addr_un->sun_path[1],service,servicelen);
 
-      socklen=offsetof(struct sockaddr_un,sun_path)+1+strlen(service);
+      socklen=offsetof(struct sockaddr_un,sun_path)+1+servicelen;
     }
   else
     {
-      if(1+strlen(service)>sizeof(addr_un->sun_path))
+      if(servicelen>sizeof(addr_un->sun_path))
 	{
 	  errno=ERANGE;
 	  return -1;
 	}
 
-      strcpy(addr_un->sun_path,service);
+      memcpy(addr_un->sun_path,service,servicelen);
 
-      socklen=offsetof(struct sockaddr_un,sun_path)+strlen(service);
+      socklen=offsetof(struct sockaddr_un,sun_path)+servicelen;
     }
 
   return socklen;
