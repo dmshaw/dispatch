@@ -43,25 +43,22 @@ void msg_config_init(struct msg_config *config);
 int msg_init(const struct msg_config *config);
 
 /* Open a connection to the entity specified via host & service (in
-   the getaddrinfo sense). */
+   the getaddrinfo sense).  Service can also contain a full path to
+   the local/unix domain socket or a string starting with @ for an
+   abstract socket (only on Linux). */
 
 struct msg_connection *msg_open(const char *host,const char *service,int flags);
 
 /* Possible flags are:
 
-   Use local sockets.  Host must be NULL.  Service contains the full
-   path to the local/unix domain socket. */
-#define MSG_LOCAL 1
+   No longer used, but ignored for backwards compatibility. */
+#define MSG_LOCAL 0
 
 /* Don't return on a listen (i.e. become the listener thread) */
 #define MSG_NORETURN 2
 
 /* Don't block on a send */
 #define MSG_NONBLOCK 4
-
-/* Make the local socket in the abstract namespace (only on Linux).
-   Implies MSG_LOCAL. */
-#define MSG_ABSTRACT 8
 
 /* TODO: add the getaddrinfo flags here, a la NUMERICHOST, etc. */
 

@@ -14,30 +14,45 @@
 /* No caching yet.  This is all opens and closes. */
 
 socklen_t
-populate_sockaddr_un(const char *service,int flags,struct sockaddr_un *addr_un)
+populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un)
 {
   socklen_t socklen;
-  size_t servicelen=strlen(service);
+  size_t servicelen;
+
+  if(!service)
+    {
+      errno=EINVAL;
+      return -1;
+    }
+
+  servicelen=strlen(service);
+
+  if(servicelen<2)
+    {
+      errno=EINVAL;
+      return -1;
+    }
 
   memset(addr_un,0,sizeof(addr_un));
 
   addr_un->sun_family=AF_LOCAL;
 
-  if(flags&MSG_ABSTRACT)
+  if(service[0]=='@')
     {
       /* Note that sun_path isn't null terminated in the abstract
-	 namespace.  The socklen field is used to know when it
-	 ends. */
+	 namespace.  The socklen field is used to know when it ends.
+	 This code effectively replaces the leading @ in the service
+	 with a null. */
 
-      if(1+servicelen>sizeof(addr_un->sun_path))
+      if(servicelen>sizeof(addr_un->sun_path))
 	{
 	  errno=ERANGE;
 	  return -1;
 	}
 
-      memcpy(&addr_un->sun_path[1],service,servicelen);
+      memcpy(&addr_un->sun_path[1],&service[1],servicelen-1);
 
-      socklen=offsetof(struct sockaddr_un,sun_path)+1+servicelen;
+      socklen=offsetof(struct sockaddr_un,sun_path)+servicelen;
     }
   else
     {
@@ -100,7 +115,8 @@ get_connection(const char *host,const char *service,int flags)
   struct msg_connection *conn=NULL;
 
   /* We don't need these yet, so lock them to their correct values. */
-  if(host || !(flags&MSG_LOCAL || flags&MSG_ABSTRACT))
+  if(host || !service || strlen(service)<2
+     || !(service[0]=='/' || service[0]=='@'))
     {
       errno=EINVAL;
       return NULL;
@@ -112,7 +128,7 @@ get_connection(const char *host,const char *service,int flags)
 
   conn->fd=-1;
 
-  if(flags&MSG_LOCAL || flags&MSG_ABSTRACT)
+  if(service[0]=='/' || service[0]=='@')
     {
       struct sockaddr_un addr_un;
       socklen_t socklen;
@@ -127,7 +143,7 @@ get_connection(const char *host,const char *service,int flags)
       if(flags&MSG_NONBLOCK && nonblock_fd(conn->fd)==-1)
 	goto fail;
 
-      socklen=populate_sockaddr_un(service,flags,&addr_un);
+      socklen=populate_sockaddr_un(service,&addr_un);
       if(socklen==-1)
 	goto fail;
 
