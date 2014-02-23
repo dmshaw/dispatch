@@ -13,8 +13,7 @@ struct msg_connection
   } flags;
 };
 
-socklen_t populate_sockaddr_un(const char *service,int flags,
-			       struct sockaddr_un *addr_un);
+socklen_t populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un);
 int cloexec_fd(int fd);
 int nonblock_fd(int fd);
 struct msg_connection *get_connection(const char *host,const char *service,

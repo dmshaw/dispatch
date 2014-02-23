@@ -230,7 +230,8 @@ msg_listen(const char *host,const char *service,int flags,
   pthread_t thread;
 
   /* We don't need these yet, so lock them to their correct values. */
-  if(host || !(flags&MSG_LOCAL || flags&MSG_ABSTRACT))
+  if(host || !service || strlen(service)<2
+     || !(service[0]=='/' || service[0]=='@'))
     {
       errno=EINVAL;
       return -1;
@@ -263,7 +264,7 @@ msg_listen(const char *host,const char *service,int flags,
 
   data->handlers[i].type=0;
 
-  if(flags&MSG_LOCAL || flags&MSG_ABSTRACT)
+  if(service[0]=='/' || service[0]=='@')
     {
       struct sockaddr_un addr_un;
       socklen_t socklen;
@@ -275,11 +276,11 @@ msg_listen(const char *host,const char *service,int flags,
       if(cloexec_fd(data->sock)==-1)
 	goto fail;
 
-      socklen=populate_sockaddr_un(service,flags,&addr_un);
+      socklen=populate_sockaddr_un(service,&addr_un);
       if(socklen==-1)
 	goto fail;
 
-      if(!(flags&MSG_ABSTRACT))
+      if(service[0]=='/')
 	unlink(service);
 
       err=bind(data->sock,(struct sockaddr *)&addr_un,socklen);
