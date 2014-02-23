@@ -1,5 +1,7 @@
 #include <config.h>
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #include <dispatch.h>
 #include "common.h"
 
@@ -13,7 +15,11 @@ main(int argc,char *argv[])
 
   conn=msg_open(NULL,MY_SOCKET,MSG_LOCAL);
   if(!conn)
-    goto fail;
+    {
+      fprintf(stderr,"Unable to open socket %s: %s\n",
+	      MY_SOCKET,strerror(errno));
+      goto fail;
+    }
 
   err=msg_write_type(conn,MY_MSG_1);
   if(err<1)
