@@ -13,7 +13,7 @@ main(int argc,char *argv[])
 
   printf("Sending message 1...\n");
 
-  conn=msg_open(NULL,MY_SOCKET,MSG_LOCAL);
+  conn=msg_open(NULL,MY_SOCKET,0);
   if(!conn)
     {
       fprintf(stderr,"Unable to open socket %s: %s\n",
