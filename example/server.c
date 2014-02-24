@@ -41,7 +41,7 @@ main(int argc,char *argv[])
 
   msg_init(&config);
 
-  err=msg_listen(NULL,MY_SOCKET,MSG_LOCAL,handlers);
+  err=msg_listen(NULL,MY_SOCKET,0,handlers);
   if(err==-1)
     {
       fprintf(stderr,"Unable to listen on socket %s: %s\n",
