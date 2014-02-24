@@ -52,7 +52,7 @@ struct msg_connection *msg_open(const char *host,const char *service,int flags);
 /* Possible flags are:
 
    No longer used, but ignored for backwards compatibility. */
-#define MSG_LOCAL 0
+#define MSG_LOCAL 1
 
 /* Don't return on a listen (i.e. become the listener thread) */
 #define MSG_NORETURN 2
