@@ -102,6 +102,8 @@ int msg_listen(const char *host,const char *service,int flags,
    (the length of the string or integer) on success.  There are no
    short reads/writes. */
 
+int msg_skip_bytes(struct msg_connection *conn,size_t bytes);
+
 int msg_read_string(struct msg_connection *conn,char **string);
 int msg_write_string(struct msg_connection *conn,const char *string);
 
