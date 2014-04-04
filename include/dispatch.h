@@ -116,21 +116,27 @@ int msg_write_buffer(struct msg_connection *conn,
 
 int msg_read_uint8(struct msg_connection *conn,uint8_t *val);
 int msg_write_uint8(struct msg_connection *conn,uint8_t val);
+#define msg_skip_uint8(_c) msg_skip_bytes((_c),1)
 
 int msg_read_uint16(struct msg_connection *conn,uint16_t *val);
 int msg_write_uint16(struct msg_connection *conn,uint16_t val);
+#define msg_skip_uint16(_c) msg_skip_bytes((_c),2)
 
 int msg_read_int32(struct msg_connection *conn,int32_t *val);
 int msg_write_int32(struct msg_connection *conn,int32_t val);
+#define msg_skip_int32(_c) msg_skip_bytes((_c),4)
 
 int msg_read_uint32(struct msg_connection *conn,uint32_t *val);
 int msg_write_uint32(struct msg_connection *conn,uint32_t val);
+#define msg_skip_uint32(_c) msg_skip_bytes((_c),4)
 
 int msg_read_int64(struct msg_connection *conn,int64_t *val);
 int msg_write_int64(struct msg_connection *conn,int64_t val);
+#define msg_skip_int64(_c) msg_skip_bytes((_c),8)
 
 int msg_read_uint64(struct msg_connection *conn,uint64_t *val);
 int msg_write_uint64(struct msg_connection *conn,uint64_t val);
+#define msg_skip_uint64(_c) msg_skip_bytes((_c),8)
 
 int msg_read_fd(struct msg_connection *conn,int *fd);
 int msg_write_fd(struct msg_connection *conn,int fd);
