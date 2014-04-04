@@ -352,6 +352,23 @@ msg_write_int64(struct msg_connection *conn,int64_t val)
 }
 
 int
+msg_skip_bytes(struct msg_connection *conn,size_t bytes)
+{
+  unsigned char *buf;
+  ssize_t err;
+
+  buf=malloc(bytes);
+  if(!buf)
+    return -1;
+
+  err=msg_read(conn,buf,bytes);
+
+  free(buf);
+
+  return err;
+}
+
+int
 msg_read_uint64(struct msg_connection *conn,uint64_t *val)
 {
   unsigned char buf[8];
