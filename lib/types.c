@@ -135,10 +135,14 @@ msg_read_string(struct msg_connection *conn,char **string)
 	{
 	  err=msg_read(conn,*string,length);
 	  if(err!=length)
-	    free(*string);
+	    {
+	      free(*string);
+	      *string=NULL;
+	    }
 	}
 
-      (*string)[length]='\0';
+      if(*string)
+	(*string)[length]='\0';
     }
 
   return err;
