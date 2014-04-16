@@ -33,7 +33,7 @@ populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un)
       return -1;
     }
 
-  memset(addr_un,0,sizeof(addr_un));
+  memset(addr_un,0,sizeof(*addr_un));
 
   addr_un->sun_family=AF_LOCAL;
 
