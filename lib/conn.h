@@ -9,7 +9,7 @@ struct msg_connection
   struct
   {
     unsigned int internal:1;
-  } flags;
+  } bits;
 };
 
 socklen_t populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un);

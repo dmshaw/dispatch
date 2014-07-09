@@ -156,7 +156,7 @@ accept_thread(void *d)
       if(!ddata)
 	call_panic(adata->handlers,"calloc",strerror(errno));
 
-      ddata->conn.flags.internal=1;
+      ddata->conn.bits.internal=1;
 
       do
 	{

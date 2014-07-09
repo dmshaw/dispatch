@@ -167,7 +167,7 @@ int
 close_connection(struct msg_connection *conn)
 {
   close(conn->fd);
-  if(!conn->flags.internal)
+  if(!conn->bits.internal)
     free(conn);
 
   return 0;
