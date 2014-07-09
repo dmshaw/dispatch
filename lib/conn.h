@@ -9,7 +9,6 @@ struct msg_connection
   struct
   {
     unsigned int internal:1;
-    unsigned int poisoned:1;
   } flags;
 };
 
