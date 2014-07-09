@@ -60,6 +60,9 @@ struct msg_connection *msg_open(const char *host,const char *service,int flags);
 /* Don't block on a send */
 #define MSG_NONBLOCK 4
 
+/* Retry on EINTR */
+#define MSG_RETRY 8
+
 /* TODO: add the getaddrinfo flags here, a la NUMERICHOST, etc. */
 
 /* Read and write to an open connection.  Treat these as you would

@@ -78,7 +78,9 @@ msg_read(struct msg_connection *conn,void *buf,size_t count)
     {
       ssize_t did_read;
 
-      did_read=read(conn->fd,read_to,do_read);
+      do
+	did_read=read(conn->fd,read_to,do_read);
+      while(did_read==-1 && errno==EINTR && conn->flags&MSG_RETRY);
 
       if(did_read==-1)
 	return -1;
@@ -105,7 +107,9 @@ msg_write(struct msg_connection *conn,const void *buf,size_t count)
     {
       ssize_t did_write;
 
-      did_write=write(conn->fd,write_to,do_write);
+      do
+	did_write=write(conn->fd,write_to,do_write);
+      while(did_write==-1 && errno==EINTR && conn->flags&MSG_RETRY);
 
       if(did_write==-1)
 	return -1;
