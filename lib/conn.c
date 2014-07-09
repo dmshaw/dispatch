@@ -140,6 +140,8 @@ get_connection(const char *host,const char *service,int flags)
       if(cloexec_fd(conn->fd)==-1)
 	goto fail;
 
+      conn->flags=flags;
+
       if(flags&MSG_NONBLOCK && nonblock_fd(conn->fd)==-1)
 	goto fail;
 
