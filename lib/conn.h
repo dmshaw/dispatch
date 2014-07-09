@@ -6,6 +6,7 @@
 struct msg_connection
 {
   int fd;
+  int flags;
   struct
   {
     unsigned int internal:1;
