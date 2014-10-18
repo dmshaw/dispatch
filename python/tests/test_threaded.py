@@ -52,6 +52,7 @@ class TestCase(unittest.TestCase):
             return
         cls._t = threading.Thread(target=cls._start_server)
         cls._t.start()
+        time.sleep(0.1) # let the server thread run first
 
     @classmethod
     def tearDownClass(cls):
@@ -70,7 +71,8 @@ class TestCase(unittest.TestCase):
 
     @classmethod
     def _start_server(cls):
-        cls.SOCKF = os.path.join(cls.TEMP, 'd.sock')
+        if cls.SOCKF is None:
+            cls.SOCKF = os.path.join(cls.TEMP, 'd.sock')
         h = cls.server_handlers()
         cls._d = dispatch.Dispatcher(h)
         cls._d.timeout = 1
@@ -204,6 +206,12 @@ class EchoTestCase(TestCase):
             self.assertEqual(r1, 'Hello Mars')
             self.assertEqual(r2, 5050505)
             self.assertEqual(r3, 0xA)
+
+
+class EchoAbstractTestCase(EchoTestCase):
+    """Run the same tests as EchoTestCase, with abstract unix sockets."""
+    SOCKF = '@/tmp/dispatch/EchoAbstractTestCase'
+
 
 if __name__ == '__main__':
     unittest.main()
