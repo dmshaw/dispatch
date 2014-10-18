@@ -23,6 +23,17 @@ Requires: /sbin/install-info
 This package contains the libraries and header files needed to develop
 programs that use the dispatch library.
 
+%package python
+Summary: Python bindings for dispatch (aka dsdispatch)
+Group: Development/Libraries
+BuildRequires: python-devel
+Requires: python
+Requires: dispatch = %{version}
+
+%description python
+This package contains Python bindings for the dispatch library,
+called dsdispath. Provides both client and server interfaces.
+
 %prep
 %setup
 
@@ -54,3 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdispatch.la
 %{_libdir}/pkgconfig/dispatch.pc
 %{_includedir}/dispatch.h
+
+%files python
+%defattr(-,root,root)
+%{python2_sitearch}/_dsdispatch.so
+%{python2_sitearch}/_dsdispatch.la
+%{python2_sitearch}/dsdispatch.py*
