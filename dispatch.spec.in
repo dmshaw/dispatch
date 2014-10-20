@@ -72,8 +72,8 @@ called dsdispath. Provides both client and server interfaces.
 
 %files python
 %defattr(-,root,root)
-%{python2_sitearch}/_dsdispatch.so
-%{python2_sitearch}/_dsdispatch.la
-%{python2_sitearch}/dsdispatch.py*
+%{python_sitearch}/_dsdispatch.so
+%{python_sitearch}/_dsdispatch.la
+%{python_sitearch}/dsdispatch.py*
 
 %endif
