@@ -41,10 +41,20 @@ dnl AC_CHECK_DECLS([TCP_CORK],,,[#include <netinet/tcp.h>])
 # Checks for library functions.
 AC_CHECK_FUNCS([syslog])
 
-AM_PATH_PYTHON
-PKG_CHECK_MODULES(python,python,,AC_MSG_ERROR([$python_PKG_ERRORS]))
+AC_ARG_WITH(python,
+   AS_HELP_STRING([--without-python],[disable Python bindings]),
+   [if test $withval = no ; then
+       with_python=no
+    else
+       with_python=yes
+    fi],with_python=yes)
 
+if test "$with_python" = "yes" ; then
+   AM_PATH_PYTHON
+   PKG_CHECK_MODULES(python,python,has_python=yes)
+fi
 
+AM_CONDITIONAL([PYTHON],[test "$has_python" = "yes"])
 
 AC_ARG_ENABLE(optimization,
    AS_HELP_STRING([--disable-optimization],[disable compiler optimization]),
@@ -56,5 +66,9 @@ if test "$GCC" = yes; then
    CFLAGS="-Wall -Werror -pedantic $CFLAGS"
 fi
 
-AC_CONFIG_FILES([Makefile lib/Makefile example/Makefile python/Makefile dispatch.pc dispatch.spec])
+AC_CONFIG_FILES([Makefile lib/Makefile example/Makefile dispatch.pc dispatch.spec])
+if test "$has_python" = "yes" ; then
+   AC_CONFIG_FILES([python/Makefile])
+fi
+
 AC_OUTPUT
