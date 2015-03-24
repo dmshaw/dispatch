@@ -216,6 +216,21 @@ class TestSampleServer(ServerTestCase):
                 os.close(fd)
             self.assertRaises((OSError, IOError), os.read, fd, 8)
 
+    def test_open_zero_source(self):
+        fname = os.path.join(self._td, 'd.sock')
+        ss = sample_server_cli
+        self.assert_server_alive()
+        with dispatch.open('', fname) as conn:
+            dispatch.msg_write_type(conn, ss.OPEN_ZERO)
+            t = dispatch.msg_read_type(conn)
+            self.assertEqual(t, ss.T_RESULT)
+            fh = dispatch.msg_read_file(conn)
+            with fh:
+                buf = fh.read(8)
+                self.assertEqual(len(buf), 8)
+                self.assertEqual(buf, '\0' * 8)
+            self.assertRaises((ValueError, OSError, IOError), fh.read, 8)
+
     def test_round_trip_reverse(self):
         fname = os.path.join(self._td, 'd.sock')
         ss = sample_server_cli
