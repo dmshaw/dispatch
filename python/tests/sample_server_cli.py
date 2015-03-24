@@ -30,6 +30,7 @@ COMP_FACT = 10
 OPEN_RAND = 11
 ROUND_TRIP = 12
 A_FEW_BYTES = 13
+OPEN_ZERO = 14
 
 
 def comp_fact(dtype, conn):
@@ -55,6 +56,16 @@ def open_rand(dtype, conn):
     finally:
         if fd:
             os.close(fd)
+
+
+def open_zero(dtype, conn):
+    with open('/dev/zero', 'r+b') as fh:
+        try:
+            dispatch.msg_write_type(conn, T_RESULT)
+            dispatch.msg_write_file(conn, fh)
+        except (IOError, OSError, ValueError):
+            dispatch.msg_write_type(conn, T_ERROR)
+            dispatch.msg_write_uint16(conn, 1)
 
 
 UINT32_MAX = (1 << 31) - 1
@@ -140,6 +151,7 @@ def serve(sockfn):
     dispatch.msg_listen("", sockfn, {
         COMP_FACT: comp_fact,
         OPEN_RAND: open_rand,
+        OPEN_ZERO: open_zero,
         ROUND_TRIP: round_trip_reverse,
         A_FEW_BYTES: a_few_bytes,
     })
