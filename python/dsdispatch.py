@@ -213,3 +213,23 @@ def _handle_connection(conn, handlers):
     else:
         raise ValueError('unknown type value: %d' % typeval)
     return (typeval, handler)
+
+
+def msg_write_file(conn, fileobj):
+    """Pass the file descriptor associated with fileobj over the connection.
+    """
+    if getattr(fileobj, 'fileno'):
+        fd = fileobj.fileno()
+    else:
+        raise ValueError(
+            'fileobj has no fileno method (use msg_*_fd for fd ints)')
+    return msg_write_fd(conn, fd)
+
+
+def msg_read_file(conn, mode=None):
+    """Return a file object (associated with a file descriptor) passed over
+    the dispatch connection. If mode is specified the returned file object
+    will be created with that mode, otherwise r+b is used as the default.
+    """
+    fd = msg_read_fd(conn)
+    return os.fdopen(fd, (mode or 'r+b'))
