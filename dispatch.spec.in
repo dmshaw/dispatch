@@ -67,8 +67,8 @@ Requires: python
 Requires: dispatch = %{version}
 
 %description python
-This package contains Python bindings for the dispatch library,
-called dsdispath. Provides both client and server interfaces.
+This package contains Python bindings for the dispatch library, called
+dsdispatch. Provides both client and server interfaces.
 
 %files python
 %defattr(-,root,root)
