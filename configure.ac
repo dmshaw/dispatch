@@ -7,6 +7,7 @@ AC_CONFIG_SRCDIR([lib/msg.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([std-options])
+AC_USE_SYSTEM_EXTENSIONS
 
 # Checks for programs.
 AC_PROG_CC
@@ -34,6 +35,8 @@ AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
+
+AC_CHECK_TYPES([struct ucred],[],[],[[#include <sys/socket.h>]])
 
 dnl # TCP_CORK is a real help, but we can work without it.
 dnl AC_CHECK_DECLS([TCP_CORK],,,[#include <netinet/tcp.h>])
