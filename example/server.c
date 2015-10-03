@@ -9,7 +9,13 @@
 static int
 do_msg_1(uint16_t type,struct msg_connection *conn)
 {
+  struct msg_peerinfo info;
+
   printf("I'm in msg_1\n");
+
+  if(msg_peerinfo(conn,&info)==0 && info.type==MSG_PEERINFO_LOCAL)
+    printf("\tPeer info: PID %u.  Peer UID %u.  Peer GID %u.\n",
+	   info.local.pid,info.local.uid,info.local.gid);
 
   return 0;
 }
