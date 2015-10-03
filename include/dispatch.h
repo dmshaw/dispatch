@@ -144,6 +144,21 @@ int msg_write_uint64(struct msg_connection *conn,uint64_t val);
 int msg_read_fd(struct msg_connection *conn,int *fd);
 int msg_write_fd(struct msg_connection *conn,int fd);
 
+enum msg_peerinfo_types {MSG_PEERINFO_LOCAL};
+
+struct msg_peerinfo
+{
+  enum msg_peerinfo_types type;
+  struct
+  {
+    pid_t pid;
+    uid_t uid;
+    gid_t gid;
+  } local;
+};
+
+int msg_peerinfo(struct msg_connection *conn,struct msg_peerinfo *info);
+
 #ifdef __cplusplus
 }
 #endif

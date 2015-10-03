@@ -174,3 +174,26 @@ close_connection(struct msg_connection *conn)
 
   return 0;
 }
+
+int
+conn_peerinfo(struct msg_connection *conn,struct msg_peerinfo *info)
+{
+#ifdef HAVE_STRUCT_UCRED
+  struct ucred ucred;
+  socklen_t len=sizeof(ucred);
+
+  if(getsockopt(conn->fd,SOL_SOCKET,SO_PEERCRED,&ucred,&len)==-1)
+    return -1;
+
+  info->type=MSG_PEERINFO_LOCAL;
+  info->local.pid=ucred.pid;
+  info->local.uid=ucred.uid;
+  info->local.gid=ucred.gid;
+
+  return 0;
+#else
+  errno=EINVAL;
+
+  return -1;
+#endif
+}

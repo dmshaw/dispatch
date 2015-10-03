@@ -139,3 +139,12 @@ msg_close(struct msg_connection *conn)
   else
     return 0;
 }
+
+int
+msg_peerinfo(struct msg_connection *conn,struct msg_peerinfo *info)
+{
+  if(conn)
+    return conn_peerinfo(conn,info);
+  else
+    return -1;
+}
