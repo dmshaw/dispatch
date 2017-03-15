@@ -1,4 +1,4 @@
-AM_CPPFLAGS=-I$(top_builddir)/include -I$(top_builddir)/lib -std=c99
+AM_CPPFLAGS=-I$(top_srcdir)/include -I$(top_srcdir)/lib -std=c99
 
 pyexec_LTLIBRARIES=_dsdispatch.la
 _dsdispatch_la_LDFLAGS=-module -shared -avoid-version
