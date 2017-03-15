@@ -108,7 +108,7 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
 {
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
 
-  syslog(LOG_DAEMON|LOG_EMERG,"Dispatch PANIC!  Location: %s  Concurrency:"
+  syslog(LOG_DAEMON|LOG_CRIT,"Dispatch PANIC!  Location: %s  Concurrency:"
 	 " %u of %u  Error: %s",where?where:"<NULL>",
 	 (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
 	 error?error:"<NULL>");
@@ -203,7 +203,7 @@ accept_thread(void *d)
       ddata->handler=lookup_handler(adata->handlers,ddata->type);
       if(!ddata->handler)
 	{
-	  syslog(LOG_DAEMON|LOG_EMERG,"Unable to handle type %"PRIu16,
+	  syslog(LOG_DAEMON|LOG_CRIT,"Unable to handle type %"PRIu16,
 		 ddata->type);
 
 	  fprintf(stderr,"Unable to handle type %"PRIu16"\n",ddata->type);
