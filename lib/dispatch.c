@@ -288,7 +288,7 @@ msg_listen(const char *host,const char *service,int flags,
 	goto fail;
     }
 
-  err=listen(data->sock,100);
+  err=listen(data->sock,_config->listen_backlog);
   if(err==-1)
     goto fail;
 

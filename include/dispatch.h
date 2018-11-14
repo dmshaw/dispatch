@@ -22,6 +22,7 @@ struct msg_handler
 struct msg_config
 {
   size_t max_concurrency;
+  int listen_backlog;
   size_t stacksize;
   struct
   {
