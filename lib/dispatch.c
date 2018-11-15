@@ -152,6 +152,15 @@ accept_thread(void *d)
       pthread_t worker;
       struct dispatch_data *ddata;
 
+      pthread_mutex_lock(&concurrency_lock);
+
+      while(concurrency>=_config->max_concurrency)
+	pthread_cond_wait(&concurrency_cond,&concurrency_lock);
+
+      concurrency++;
+
+      pthread_mutex_unlock(&concurrency_lock);
+
       ddata=calloc(1,sizeof(*ddata));
       if(!ddata)
 	call_panic(adata->handlers,"calloc",strerror(errno));
@@ -175,15 +184,6 @@ accept_thread(void *d)
 
       if(cloexec_fd(ddata->conn.fd)==-1)
 	call_panic(adata->handlers,"cloexec",strerror(errno));
-
-      pthread_mutex_lock(&concurrency_lock);
-
-      while(concurrency>=_config->max_concurrency)
-	pthread_cond_wait(&concurrency_cond,&concurrency_lock);
-
-      concurrency++;
-
-      pthread_mutex_unlock(&concurrency_lock);
 
       err=msg_read(&ddata->conn,header,4);
       if(err==0)
