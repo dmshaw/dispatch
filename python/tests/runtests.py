@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 # Python language wrapper for low-level dispatch functions
 #
@@ -52,6 +52,6 @@ if len(sys.argv) > 1:
         tspec = tspec.replace('+', 'python python/tests/')
         rtest(tspec)
 else:
-    rtest('python -c "import dsdispatch"')
-    rtest('python python/tests/test_threaded.py')
-    rtest('python python/tests/test_servers.py')
+    rtest('python2 -c "import dsdispatch"')
+    rtest('python2 python/tests/test_threaded.py')
+    rtest('python2 python/tests/test_servers.py')
