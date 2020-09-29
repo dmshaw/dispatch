@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 # Python language wrapper for low-level dispatch functions
 #
@@ -55,7 +55,7 @@ class ServerTestCase(unittest.TestCase):
         os.chdir(cls._td)
         outfh = open('output', 'wb')
         try:
-            cls._server = subprocess.Popen(['python', spath, 'd.sock']
+            cls._server = subprocess.Popen(['python2', spath, 'd.sock']
                                            + script_args,
                                            stdout=outfh,
                                            stderr=outfh)
@@ -182,19 +182,19 @@ class TestSampleServer(ServerTestCase):
             self.assertEqual(v, 1)
 
     def test_fact_external(self):
-        p = subprocess.Popen(['python', self.spath, 'd.sock', 'fact', '7'],
+        p = subprocess.Popen(['python2', self.spath, 'd.sock', 'fact', '7'],
                              stdout=subprocess.PIPE)
         out, err = p.communicate()
         self.assertEqual(p.returncode, 0)
         self.assertEqual(out.strip(), '5040')
 
-        p = subprocess.Popen(['python', self.spath, 'd.sock', 'fact', '11'],
+        p = subprocess.Popen(['python2', self.spath, 'd.sock', 'fact', '11'],
                              stdout=subprocess.PIPE)
         out, err = p.communicate()
         self.assertEqual(p.returncode, 0)
         self.assertEqual(out.strip(), '39916800')
 
-        p = subprocess.Popen(['python', self.spath, 'd.sock', 'fact', '30'],
+        p = subprocess.Popen(['python2', self.spath, 'd.sock', 'fact', '30'],
                              stdout=subprocess.PIPE)
         out, err = p.communicate()
         self.assertEqual(p.returncode, 1)

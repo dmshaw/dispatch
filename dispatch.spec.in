@@ -1,3 +1,5 @@
+%define __python python2
+
 Summary: Library for interprocess messaging
 Name: dispatch
 Version: @PACKAGE_VERSION@
@@ -62,8 +64,8 @@ rm -rf $RPM_BUILD_ROOT
 %package python
 Summary: Python bindings for dispatch (aka dsdispatch)
 Group: Development/Libraries
-BuildRequires: python-devel
-Requires: python
+BuildRequires: python2-devel
+Requires: python2
 Requires: dispatch = %{version}
 
 %description python

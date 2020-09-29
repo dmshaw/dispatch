@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 # Python language wrapper for low-level dispatch functions
 #
@@ -51,7 +51,7 @@ class TestEchoServer(unittest.TestCase):
                                  'echo_server.py')
         cls._td = tempfile.mkdtemp(suffix='.TestEchoServer')
         os.chdir(cls._td)
-        cls._server = subprocess.Popen(['python', spath, 'd.sock'])
+        cls._server = subprocess.Popen(['python2', spath, 'd.sock'])
         # give server a moment to set up
         time.sleep(0.25)
 
