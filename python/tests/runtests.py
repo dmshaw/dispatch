@@ -30,10 +30,6 @@ def rtest(cmd):
     if ret:
         sys.exit(ret)
 
-# cd into repo root
-while 'python' not in os.listdir('.'):
-    os.chdir('..')
-
 # set up the environment needed for the tests
 pp = os.environ.get('PYTHONPATH', '')
 wd = os.path.abspath('.')
@@ -41,9 +37,9 @@ if pp:
     pp += ':'
 pp += ":".join([
     wd,
-    os.path.join(wd, 'python'),
-    os.path.join(wd, 'python/.libs'),
-    os.path.join(wd, 'python/tests'),
+    os.path.join(wd, os.environ.get('srcdir', '')),
+    os.path.join(wd, os.environ.get('srcdir', ''), 'tests'),
+    os.path.join(wd, '.libs'),
 ])
 os.environ['PYTHONPATH'] = pp
 
@@ -53,5 +49,5 @@ if len(sys.argv) > 1:
         rtest(tspec)
 else:
     rtest('python2 -c "import dsdispatch"')
-    rtest('python2 python/tests/test_threaded.py')
-    rtest('python2 python/tests/test_servers.py')
+    rtest('python2 ' + os.environ.get('srcdir', '') + '/tests/test_threaded.py')
+    rtest('python2 ' + os.environ.get('srcdir', '') + '/tests/test_servers.py')
