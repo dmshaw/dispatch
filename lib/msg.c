@@ -56,11 +56,11 @@ msg_open(const char *host,const char *service,int flags)
 
       ret=msg_write(conn,header,2);
       if(ret<1)
-	{
-	  msg_poison(conn);
-	  msg_close(conn);
-	  conn=NULL;
-	}
+        {
+          msg_poison(conn);
+          msg_close(conn);
+          conn=NULL;
+        }
     }
 
   return conn;
@@ -80,14 +80,14 @@ msg_read(struct msg_connection *conn,void *buf,size_t count)
       ssize_t did_read;
 
       do
-	did_read=read(conn->fd,read_to,do_read);
+        did_read=read(conn->fd,read_to,do_read);
       while(did_read==-1 && errno==EINTR && conn->flags&MSG_RETRY);
 
       if(did_read==-1)
-	return -1;
+        return -1;
 
       if(did_read==0)
-	return 0;
+        return 0;
 
       do_read-=did_read;
       read_to+=did_read;
@@ -109,14 +109,14 @@ msg_write(struct msg_connection *conn,const void *buf,size_t count)
       ssize_t did_write;
 
       do
-	did_write=write(conn->fd,write_to,do_write);
+        did_write=write(conn->fd,write_to,do_write);
       while(did_write==-1 && errno==EINTR && conn->flags&MSG_RETRY);
 
       if(did_write==-1)
-	return -1;
+        return -1;
 
       if(did_write==0)
-	return 0;
+        return 0;
 
       do_write-=did_write;
       write_to+=did_write;

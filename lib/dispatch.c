@@ -89,16 +89,16 @@ dump_status(FILE *output)
 
       file=fopen(path,"r");
       if(!file)
-	fprintf(output,"Can't open %s: %s\n",path,strerror(errno));
+        fprintf(output,"Can't open %s: %s\n",path,strerror(errno));
       else
-	{
-	  char line[1024];
+        {
+          char line[1024];
 
-	  while(fgets(line,1024,file))
-	    fprintf(output,"%s",line);
+          while(fgets(line,1024,file))
+            fprintf(output,"%s",line);
 
-	  fclose(file);
-	}
+          fclose(file);
+        }
     }
 }
 #endif
@@ -109,13 +109,13 @@ call_panic(struct msg_handler *handlers,const char *where,const char *error)
   msg_handler_t hand=lookup_handler(handlers,MSG_TYPE_PANIC);
 
   syslog(LOG_DAEMON|LOG_CRIT,"Dispatch PANIC!  Location: %s  Concurrency:"
-	 " %u of %u  Error: %s",where?where:"<NULL>",
-	 (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
-	 error?error:"<NULL>");
+         " %u of %u  Error: %s",where?where:"<NULL>",
+         (unsigned int)concurrency,(unsigned int)_config->max_concurrency,
+         error?error:"<NULL>");
 
   fprintf(stderr,"Dispatch PANIC!  Location: %s  Concurrency: %u of %u"
-	  "  Error: %s\n",where?where:"<NULL>",(unsigned int)concurrency,
-	  (unsigned int)_config->max_concurrency,error?error:"<NULL>");
+          "  Error: %s\n",where?where:"<NULL>",(unsigned int)concurrency,
+          (unsigned int)_config->max_concurrency,error?error:"<NULL>");
 
   if(hand)
     (hand)(MSG_TYPE_PANIC,NULL);
@@ -142,7 +142,7 @@ accept_thread(void *d)
     {
       int err=pthread_attr_setstacksize(&attr,_config->stacksize);
       if(err)
-	call_panic(adata->handlers,"pthread_attr_setstacksize",strerror(err));
+        call_panic(adata->handlers,"pthread_attr_setstacksize",strerror(err));
     }
 
   for(;;)
@@ -155,7 +155,7 @@ accept_thread(void *d)
       pthread_mutex_lock(&concurrency_lock);
 
       while(concurrency>=_config->max_concurrency)
-	pthread_cond_wait(&concurrency_cond,&concurrency_lock);
+        pthread_cond_wait(&concurrency_cond,&concurrency_lock);
 
       concurrency++;
 
@@ -163,59 +163,59 @@ accept_thread(void *d)
 
       ddata=calloc(1,sizeof(*ddata));
       if(!ddata)
-	call_panic(adata->handlers,"calloc",strerror(errno));
+        call_panic(adata->handlers,"calloc",strerror(errno));
 
       ddata->conn.bits.internal=1;
 
       do
-	{
-	  ddata->conn.fd=accept(adata->sock,NULL,NULL);
-	  if(ddata->conn.fd==-1 && errno!=EINTR)
-	    {
-	      if(_config->panic_on.failed_accept)
-		call_panic(adata->handlers,"accept",strerror(errno));
-	      else if(_config->log_on.failed_accept
-		      && (failed_accept_count++)%_config->log_on.failed_accept==0)
-		syslog(LOG_DAEMON|LOG_ERR,"Dispatch could not accept: %s",
-		       strerror(errno));
-	    }
-	}
+        {
+          ddata->conn.fd=accept(adata->sock,NULL,NULL);
+          if(ddata->conn.fd==-1 && errno!=EINTR)
+            {
+              if(_config->panic_on.failed_accept)
+                call_panic(adata->handlers,"accept",strerror(errno));
+              else if(_config->log_on.failed_accept
+                      && (failed_accept_count++)%_config->log_on.failed_accept==0)
+                syslog(LOG_DAEMON|LOG_ERR,"Dispatch could not accept: %s",
+                       strerror(errno));
+            }
+        }
       while(ddata->conn.fd==-1);
 
       if(cloexec_fd(ddata->conn.fd)==-1)
-	call_panic(adata->handlers,"cloexec",strerror(errno));
+        call_panic(adata->handlers,"cloexec",strerror(errno));
 
       err=msg_read(&ddata->conn,header,4);
       if(err==0)
-	{
-	  /* EOF, so close and reloop. */
+        {
+          /* EOF, so close and reloop. */
 
-	  close(ddata->conn.fd);
-	  free(ddata);
-	  continue;
-	}
+          close(ddata->conn.fd);
+          free(ddata);
+          continue;
+        }
       else if(err==-1)
-	call_panic(adata->handlers,"msg_read",strerror(errno));
+        call_panic(adata->handlers,"msg_read",strerror(errno));
 
       ddata->type =header[2]<<8;
       ddata->type|=header[3];
 
       ddata->handler=lookup_handler(adata->handlers,ddata->type);
       if(!ddata->handler)
-	{
-	  syslog(LOG_DAEMON|LOG_CRIT,"Unable to handle type %"PRIu16,
-		 ddata->type);
+        {
+          syslog(LOG_DAEMON|LOG_CRIT,"Unable to handle type %"PRIu16,
+                 ddata->type);
 
-	  fprintf(stderr,"Unable to handle type %"PRIu16"\n",ddata->type);
+          fprintf(stderr,"Unable to handle type %"PRIu16"\n",ddata->type);
 
-	  abort();
-	}
+          abort();
+        }
 
       /* Pop off a thread to handle the connection */
 
       err=pthread_create(&worker,&attr,worker_thread,ddata);
       if(err)
-	call_panic(adata->handlers,"pthread_create",strerror(err));
+        call_panic(adata->handlers,"pthread_create",strerror(err));
     }
 
   return NULL;
@@ -223,7 +223,7 @@ accept_thread(void *d)
 
 int
 msg_listen(const char *host,const char *service,int flags,
-	   struct msg_handler *handlers)
+           struct msg_handler *handlers)
 {
   int i,err,save_errno;
   struct accept_data *data;
@@ -271,21 +271,21 @@ msg_listen(const char *host,const char *service,int flags,
 
       data->sock=socket(AF_LOCAL,SOCK_STREAM,0);
       if(data->sock==-1)
-	goto fail;
+        goto fail;
 
       if(cloexec_fd(data->sock)==-1)
-	goto fail;
+        goto fail;
 
       socklen=populate_sockaddr_un(service,&addr_un);
       if(socklen==-1)
-	goto fail;
+        goto fail;
 
       if(service[0]=='/')
-	unlink(service);
+        unlink(service);
 
       err=bind(data->sock,(struct sockaddr *)&addr_un,socklen);
       if(err==-1)
-	goto fail;
+        goto fail;
     }
 
   err=listen(data->sock,_config->listen_backlog);
@@ -301,10 +301,10 @@ msg_listen(const char *host,const char *service,int flags,
     {
       err=pthread_create(&thread,NULL,accept_thread,data);
       if(err)
-	{
-	  errno=err;
-	  goto fail;
-	}
+        {
+          errno=err;
+          goto fail;
+        }
     }
 
   return 0;

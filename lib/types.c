@@ -33,7 +33,7 @@ read_length(struct msg_connection *conn,uint32_t *length,uint8_t *special)
 
       err=msg_read(conn,&a,1);
       if(err!=1)
-	return err;
+        return err;
 
       *length+=a+192;
     }
@@ -43,25 +43,25 @@ read_length(struct msg_connection *conn,uint32_t *length,uint8_t *special)
     {
       err=msg_read(conn,&a,1);
       if(err!=1)
-	return err;
+        return err;
 
       *length =a<<24;
 
       err=msg_read(conn,&a,1);
       if(err!=1)
-	return err;
+        return err;
 
       *length|=a<<16;
 
       err=msg_read(conn,&a,1);
       if(err!=1)
-	return err;
+        return err;
 
       *length|=a<<8;
 
       err=msg_read(conn,&a,1);
       if(err!=1)
-	return err;
+        return err;
 
       *length|=a;
     }
@@ -129,20 +129,20 @@ msg_read_string(struct msg_connection *conn,char **string)
     {
       *string=malloc(length+1);
       if(!*string)
-	return -1;
+        return -1;
 
       if(length>0)
-	{
-	  err=msg_read(conn,*string,length);
-	  if(err!=length)
-	    {
-	      free(*string);
-	      *string=NULL;
-	    }
-	}
+        {
+          err=msg_read(conn,*string,length);
+          if(err!=length)
+            {
+              free(*string);
+              *string=NULL;
+            }
+        }
 
       if(*string)
-	(*string)[length]='\0';
+        (*string)[length]='\0';
     }
 
   return err;
@@ -159,12 +159,12 @@ msg_write_string(struct msg_connection *conn,const char *string)
 
       err=write_length(conn,length,0);
       if(err!=1)
-	return err;
+        return err;
 
       if(length>0)
-	return msg_write(conn,string,length);
+        return msg_write(conn,string,length);
       else
-	return 1;
+        return 1;
     }
   else
     return write_length(conn,0,1);
@@ -431,21 +431,21 @@ msg_read_fd(struct msg_connection *conn,int *fd)
   if(err==1)
     {
       if(msg.msg_controllen<sizeof(*cmsg))
-	return -1;
+        return -1;
 
       for(cmsg=CMSG_FIRSTHDR(&msg);cmsg;cmsg=CMSG_NXTHDR(&msg,cmsg))
-	{
-	  if(cmsg->cmsg_len!=CMSG_LEN(sizeof(*fd))
-	     || cmsg->cmsg_level!=SOL_SOCKET
-	     || cmsg->cmsg_type!=SCM_RIGHTS)
-	    continue;
+        {
+          if(cmsg->cmsg_len!=CMSG_LEN(sizeof(*fd))
+             || cmsg->cmsg_level!=SOL_SOCKET
+             || cmsg->cmsg_type!=SCM_RIGHTS)
+            continue;
 
-	  memcpy(fd,CMSG_DATA(cmsg),sizeof(*fd));
-	  break;
-	}
+          memcpy(fd,CMSG_DATA(cmsg),sizeof(*fd));
+          break;
+        }
 
       if(!cmsg)
-	err=-1;
+        err=-1;
     }
 
   return err;

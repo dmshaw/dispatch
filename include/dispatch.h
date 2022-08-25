@@ -88,7 +88,7 @@ int msg_close(struct msg_connection *conn);
 
 /* Listen on host/service. Same flags as msg_open. */
 int msg_listen(const char *host,const char *service,int flags,
-	       struct msg_handler *handlers);
+               struct msg_handler *handlers);
 
 /* The handler function should return 1 for success, and -1 for failure. */
 
@@ -116,7 +116,7 @@ int msg_read_buffer(struct msg_connection *conn,void *buffer,size_t length);
 
 int msg_write_buffer_length(struct msg_connection *conn,size_t length);
 int msg_write_buffer(struct msg_connection *conn,
-		     const void *buffer,size_t length);
+                     const void *buffer,size_t length);
 
 int msg_read_uint8(struct msg_connection *conn,uint8_t *val);
 int msg_write_uint8(struct msg_connection *conn,uint8_t val);
