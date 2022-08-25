@@ -4,10 +4,10 @@ Summary: Library for interprocess messaging
 Name: dispatch
 Version: @PACKAGE_VERSION@
 Release: 1%{?dist}
-License: LGPL
+License: LGPLv2+
 Group: System Environment/Libraries
-Source: http://www.jabberwocky.com/software/dispatch/dispatch-%{version}.tar.gz
-Url: http://www.jabberwocky.com/software/dispatch/
+Source: https://github.com/dmshaw/dispatch/archive/v%{version}/%{name}-%{version}.tar.gz
+Url: https://github.com/dmshaw/dispatch
 Requires: /sbin/ldconfig
 BuildRoot: %{_tmppath}/%{name}-root
 
