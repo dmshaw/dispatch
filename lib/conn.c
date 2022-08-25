@@ -135,7 +135,7 @@ get_connection(const char *host,const char *service,int flags)
 
       conn->fd=socket(AF_LOCAL,SOCK_STREAM,0);
       if(conn->fd==-1)
-        return NULL;
+        goto fail;
 
       if(cloexec_fd(conn->fd)==-1)
         goto fail;
@@ -159,7 +159,8 @@ get_connection(const char *host,const char *service,int flags)
 
  fail:
   save_errno=errno;
-  close(conn->fd);
+  if(conn->fd>-1)
+    close(conn->fd);
   free(conn);
   errno=save_errno;
   return NULL;
