@@ -15,7 +15,7 @@ do_msg_1(uint16_t type,struct msg_connection *conn)
 
   if(msg_peerinfo(conn,&info)==0 && info.type==MSG_PEERINFO_LOCAL)
     printf("\tPeer info: PID %u.  Peer UID %u.  Peer GID %u.\n",
-	   info.local.pid,info.local.uid,info.local.gid);
+           info.local.pid,info.local.uid,info.local.gid);
 
   return 0;
 }
@@ -51,7 +51,7 @@ main(int argc,char *argv[])
   if(err==-1)
     {
       fprintf(stderr,"Unable to listen on socket %s: %s\n",
-	      MY_SOCKET,strerror(errno));
+              MY_SOCKET,strerror(errno));
       return -1;
     }
 

@@ -40,15 +40,15 @@ populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un)
   if(service[0]=='@')
     {
       /* Note that sun_path isn't null terminated in the abstract
-	 namespace.  The socklen field is used to know when it ends.
-	 This code effectively replaces the leading @ in the service
-	 with a null. */
+         namespace.  The socklen field is used to know when it ends.
+         This code effectively replaces the leading @ in the service
+         with a null. */
 
       if(servicelen>sizeof(addr_un->sun_path))
-	{
-	  errno=ERANGE;
-	  return -1;
-	}
+        {
+          errno=ERANGE;
+          return -1;
+        }
 
       memcpy(&addr_un->sun_path[1],&service[1],servicelen-1);
 
@@ -57,14 +57,14 @@ populate_sockaddr_un(const char *service,struct sockaddr_un *addr_un)
   else
     {
       /* There is actually some minor debate whether sun_path needs to
-	 be null terminated for regular local sockets, so this code
-	 terminates it just to be safe. */
+         be null terminated for regular local sockets, so this code
+         terminates it just to be safe. */
 
       if(servicelen+1>sizeof(addr_un->sun_path))
-	{
-	  errno=ERANGE;
-	  return -1;
-	}
+        {
+          errno=ERANGE;
+          return -1;
+        }
 
       strcpy(addr_un->sun_path,service);
 
@@ -135,19 +135,19 @@ get_connection(const char *host,const char *service,int flags)
 
       conn->fd=socket(AF_LOCAL,SOCK_STREAM,0);
       if(conn->fd==-1)
-	return NULL;
+        return NULL;
 
       if(cloexec_fd(conn->fd)==-1)
-	goto fail;
+        goto fail;
 
       conn->flags=flags;
 
       if(flags&MSG_NONBLOCK && nonblock_fd(conn->fd)==-1)
-	goto fail;
+        goto fail;
 
       socklen=populate_sockaddr_un(service,&addr_un);
       if(socklen==-1)
-	goto fail;
+        goto fail;
 
       err=connect(conn->fd,(struct sockaddr *)&addr_un,socklen);
     }

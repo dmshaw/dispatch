@@ -18,7 +18,7 @@ main(int argc,char *argv[])
   if(!conn)
     {
       fprintf(stderr,"Unable to open socket %s: %s\n",
-	      MY_SOCKET,strerror(errno));
+              MY_SOCKET,strerror(errno));
       goto fail;
     }
 
@@ -28,7 +28,7 @@ main(int argc,char *argv[])
 
   if(msg_peerinfo(conn,&info)==0 && info.type==MSG_PEERINFO_LOCAL)
     printf("\tPeer info: PID %u.  Peer UID %u.  Peer GID %u.\n",
-	   info.local.pid,info.local.uid,info.local.gid);
+           info.local.pid,info.local.uid,info.local.gid);
 
  fail:
   msg_close(conn);
