@@ -55,6 +55,15 @@ lookup_handler(struct msg_handler *handlers,unsigned short type)
   return NULL;
 }
 
+static void
+concurrency_dec(void)
+{
+  pthread_mutex_lock(&concurrency_lock);
+  concurrency--;
+  pthread_cond_signal(&concurrency_cond);
+  pthread_mutex_unlock(&concurrency_lock);
+}
+
 static void *
 worker_thread(void *d)
 {
@@ -66,10 +75,7 @@ worker_thread(void *d)
 
   free(ddata);
 
-  pthread_mutex_lock(&concurrency_lock);
-  concurrency--;
-  pthread_cond_signal(&concurrency_cond);
-  pthread_mutex_unlock(&concurrency_lock);
+  concurrency_dec();
 
   return NULL;
 }
@@ -192,6 +198,8 @@ accept_thread(void *d)
 
           close(ddata->conn.fd);
           free(ddata);
+          concurrency_dec();
+
           continue;
         }
       else if(err==-1)
